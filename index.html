@@ -14,7 +14,7 @@
 <body class="light">
     <div id="header">
         <div id="menu">
-            <div id="buttons">
+            <div id="diff_buttons">
                 <span id="difficulty"></span>
                 <button id="easy" class="diff_button" onclick="reset('Easy')">Easy</button>
                 <button id="medium" class="diff_button" onclick="reset('Medium')">Medium</button>
@@ -39,9 +39,14 @@
             <span> | </span>
             <span id="clicks"></span>
         </div>
-        <div id="resetStart">
-                <button id="reset" class="theme_button" onclick="reset()">Reset</button>
-                <button id="start" class="theme_button" onclick="start()">Start</button>
+        <div id="reset_buttons">
+            <button id="reset" onclick="reset()">Reset</button>
+            <button id="start" onclick="start()">Start</button>
+        </div>
+        <div id="powerups">
+            <span id="powerup">Powerups</span>
+            <button id="flip_cards" class="powerup_button" onclick="flipAll()">Flip All Cards</button>
+            <button id="add_time" class="powerup_button" onclick="addTenSecs()">Add Ten Seconds</button>
         </div>
     </div>
     <div id="game_grid" class="paused"></div>

@@ -8,6 +8,28 @@
     padding-top: 5px
 }
 
+.light {
+    background-color: #ffffff;
+    color: #000000;
+
+    & #game_grid {
+        border: 5px tomato solid;
+    }
+
+    & #menu {
+        background-color: #c6c6c6;
+    }
+
+    & .disabled {
+        background-color: #bbbbbb;
+    }
+}
+
+#light:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
 .dark {
     background-color: #100c1d;
     color: #00ffff;
@@ -25,21 +47,9 @@
     }
 }
 
-.light {
-    background-color: #ffffff;
-    color: #000000;
-
-    & #game_grid {
-        border: 5px tomato solid;
-    }
-
-    & #menu {
-        background-color: #c6c6c6;
-    }
-
-    & .disabled {
-        background-color: #bbbbbb;
-    }
+#dark:hover {
+    background-color: #100c1d;
+    color: #00ffff;
 }
 
 .limbus {
@@ -59,6 +69,11 @@
     }
 }
 
+#red:hover {
+    background-color: #420a0a;
+    color: #ffdd0e;
+}
+
 .blue {
     background-color: #2542c0;
     color: #000000;
@@ -71,13 +86,18 @@
         background-color: #95a7f9;
     }
 
-    & #stats, #message_grid {
+    & #stats, #message_grid, #powerups {
         color: #ffffff;
     }
 
     & .disabled {
         background-color: #bbbbdd;
     }
+}
+
+#blue:hover {
+    background-color: #2542c0;
+    color: #ffffff;
 }
 
 /* ---------- Text and Buttons ---------- */
@@ -122,6 +142,10 @@ body {
     margin-right: 40px;
 }
 
+#powerup {
+    margin-right: 10px;
+}
+
 #easy {
     background-color: #00aa00;
 }
@@ -142,10 +166,34 @@ body {
     padding: 10px 0px;
 }
 
+#powerups {
+    margin-top: 5px;
+}
+
+#reset {
+    background-color: #ff5555;
+}
+
+#reset:hover {
+    background-color: #ff7777;
+}
+
+#start {
+    background-color: #00cc00;
+}
+
+#start:hover {
+    background-color: #00dd00;
+}
+
+#start.disabled {
+    background-color: #00aa00;
+}
+
 /* ---------- Cards and Grid ---------- */
 .Easy {
-  width: 450px;
-  height: 300px;
+  width: 375px;
+  height: 250px;
 
   & .card {
     width: 33%;
@@ -153,8 +201,8 @@ body {
 }
 
 .Medium {
-  width: 600px;
-  height: 450px;
+  width: 500px;
+  height: 375px;
 
   & .card {
     width: 25%;
@@ -162,8 +210,8 @@ body {
 }
 
 .Hard {
-  width: 900px;
-  height: 450px;
+  width: 750px;
+  height: 375px;
 
   & .card {
     width: 16.6%;
@@ -173,7 +221,7 @@ body {
 
 .card {
   position: relative;
-  transition: transform 1s;
+  transition: transform 0.9s;
   perspective: 1000px;
   transform-style: preserve-3d;
 }

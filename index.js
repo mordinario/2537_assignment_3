@@ -32,19 +32,21 @@ const startButton = document.getElementById("start");
 const PairsLeft = document.getElementById("pairs_left");
 const PairsMatched = document.getElementById("pairs_matched");
 const PairsTotal = document.getElementById("pairs_total");
+const FlipButton = document.getElementById("flip_cards");
+const TimeButton = document.getElementById("add_time");
 // Declare difficulties
 const Difficulties = {
     Easy: {
         cardAmount: 6,
-        timerSeconds: 20
+        timerSeconds: 30
     },
     Medium: {
         cardAmount: 12,
-        timerSeconds: 35
+        timerSeconds: 55
     },
     Hard: {
         cardAmount: 18,
-        timerSeconds: 45
+        timerSeconds: 75
     }
 }
 // Declare variables
@@ -54,6 +56,9 @@ var gameReset;
 var clickAmount;
 var cardAmount;
 var pairsLeft;
+var secondsLeft;
+var firstCard = undefined;
+var secondCard = undefined;
 
 // Initializes game to specified
 // difficulty (or current difficulty
@@ -79,8 +84,8 @@ async function setup() {
     await setupCards();
 
     // Matching functionality
-    let firstCard = undefined
-    let secondCard = undefined
+    firstCard = undefined
+    secondCard = undefined
     // When clicked
     $(".card").on(("click"), function () {
         // If game running, count click
@@ -103,14 +108,12 @@ async function setup() {
         if (!firstCard)
         {
             firstCard = $(this).find(".front_face")[0]
-            console.log(firstCard)
             return;
         }
         // Else,
         // set the second card to the clicked card
         // AND check if the cards match
         secondCard = $(this).find(".front_face")[0]
-        console.log(firstCard, secondCard);
         // If the cards' ids match (i.e. same card),
         // do nothing
         if(firstCard.parentNode.id == secondCard.parentNode.id)
@@ -122,13 +125,13 @@ async function setup() {
         if (firstCard.src == secondCard.src)
         {
             // Disable the cards' clicking
-            console.log("match")
-            pairsLeft--;
-            refreshStats();
             $(`#${firstCard.parentNode.id}`).off("click")
             $(`#${secondCard.parentNode.id}`).off("click")
             firstCard.parentNode.classList.add("solved")
             secondCard.parentNode.classList.add("solved")
+            // Refresh stats
+            pairsLeft--;
+            refreshStats();
             // Reset selected cards
             firstCard = undefined
             secondCard = undefined
@@ -136,9 +139,8 @@ async function setup() {
             checkIfGameWon();
             return
         }
-        // Else, if they don't
-        console.log("no match")
-        // Create temp variables to
+        // Else, if they don't,
+        // create temp variables to
         // hold card objects
         let tempFirstCard = firstCard
         let tempSecondCard = secondCard
@@ -172,10 +174,10 @@ async function setupCards()
     let chosenIndexes = [];
     for(let i = 0; i < pairsLeft; i++)
     {
-        let randIndex = Math.floor(Math.random() * 1024);
+        do var randIndex = Math.floor(Math.random() * 1024)
+        while (chosenIndexes.includes(randIndex));
         chosenIndexes.push(randIndex);
     }
-    console.log(chosenIndexes)
 
     // Array of cards
     let cards = [];
@@ -219,7 +221,7 @@ function checkIfGameWon()
     for(let i = 1; i <= cardAmount; i++)
     {
         let newCard = GameGrid.querySelector(`#img${i}`)
-        if(!newCard.classList.contains("flip"))
+        if(!newCard.classList.contains("solved"))
         {
             solved = false;
             break;
@@ -235,6 +237,7 @@ function checkIfGameWon()
         winMessage.innerText = "You win!";
         MessageGrid.appendChild(winMessage);
         GameGrid.classList.add("won");
+        GameGrid.classList.remove("running")
     }
 }
 
@@ -244,7 +247,8 @@ function startTimer()
     GameGrid.classList.remove("paused");
     // Set timer
     let timerSeconds = Difficulties[difficulty].timerSeconds;
-    let secondsLeft = timerSeconds;
+    document.getElementById("timer").innerText = "Time left: " + Difficulties[difficulty].timerSeconds
+    secondsLeft = timerSeconds;
     let secondDelay = 1000;
     let timer = setInterval(() => {
         // If game was won, stop counting down
@@ -266,6 +270,7 @@ function startTimer()
             loseMessage.innerText = "You lose!";
             MessageGrid.appendChild(loseMessage);
             GameGrid.classList.add("paused");
+            GameGrid.classList.remove("running");
         }
     }, secondDelay);
 }
@@ -274,7 +279,7 @@ function startTimer()
 function setupStats()
 {
     document.getElementById("difficulty").innerText = `Difficulty: ${difficulty}`
-    document.getElementById("timer").innerText = `Time left: ${Difficulties[difficulty].timerSeconds}`
+    document.getElementById("timer").innerText = `Time left: --`
     PairsLeft.innerText = `Pairs left: ${cardAmount / 2}`
     PairsMatched.innerText = `Pairs matched: 0`
     PairsTotal.innerText = `Total pairs: ${cardAmount / 2}`
@@ -312,7 +317,52 @@ function reset(difficulty)
     startButton.classList.remove("disabled")
     MessageGrid.innerHTML = '';
     setupDifficulty(difficulty)
+    resetPowerups()
     setup()
+}
+
+// Resets powerups
+function resetPowerups()
+{
+    FlipButton.classList.remove("disabled")
+    TimeButton.classList.remove("disabled")
+}
+
+function flipAll()
+{
+    if(!FlipButton.classList.contains("disabled") &&
+       GameGrid.classList.contains("running"))
+    {
+        FlipButton.classList.add("disabled")
+        for(let i = 1; i <= cardAmount; i++)
+        {
+            let newCard = GameGrid.querySelector(`#img${i}`)
+            // If card isn't already face-up,
+            // or selected, then flip
+            if(!newCard.classList.contains("solved") &&
+               !(typeof firstCard != 'undefined' && firstCard.parentNode.id == newCard.id) &&
+               !(typeof secondCard != 'undefined' && secondCard.parentNode.id == newCard.id))
+            {
+                GameGrid.classList.add("paused")
+                newCard.classList.add("flip");
+                setTimeout(() => {
+                    newCard.classList.remove("flip");
+                    GameGrid.classList.remove("paused")
+                }, 1000);
+            }
+        }
+    }
+}
+
+function addTenSecs()
+{
+    if(!TimeButton.classList.contains("disabled") &&
+       GameGrid.classList.contains("running"))
+    {
+        TimeButton.classList.add("disabled")
+        secondsLeft += 10;
+        document.getElementById("timer").innerText = "Time left: " + secondsLeft
+    }
 }
 
 // Starts the game
@@ -342,8 +392,9 @@ function refreshStats() {
     PairsMatched.innerText = `Pairs matched: ${cardAmount / 2 - pairsLeft}`
     PairsTotal.innerText = `Total pairs: ${cardAmount / 2}`
 }
+
 $(document).ready(function() {
-    console.log( "ready!" );
+    console.log("ready!");
 });
 
 setup();
