@@ -3,6 +3,7 @@
     src: url("DTM-Mono.otf");
 }
 
+/* ---------- Themes ---------- */
 #themes {
     padding-top: 5px
 }
@@ -12,11 +13,15 @@
     color: #00ffff;
 
     & #game_grid {
-        border: 5px #ffffff solid;
+        border: 5px #ddffff solid;
     }
 
     & #menu {
         background-color: #1d2f62;
+    }
+
+    & .disabled {
+        background-color: #999999;
     }
 }
 
@@ -31,6 +36,10 @@
     & #menu {
         background-color: #c6c6c6;
     }
+
+    & .disabled {
+        background-color: #bbbbbb;
+    }
 }
 
 .limbus {
@@ -43,6 +52,10 @@
 
     & #menu {
         background-color: #6a0000;
+    }
+
+    & .disabled {
+        background-color: #ccbbbb;
     }
 }
 
@@ -61,8 +74,13 @@
     & #stats, #message_grid {
         color: #ffffff;
     }
+
+    & .disabled {
+        background-color: #bbbbdd;
+    }
 }
 
+/* ---------- Text and Buttons ---------- */
 p, span {
     font-family: 'DTM-Mono';
 }
@@ -92,10 +110,6 @@ body {
   flex-wrap: wrap;
 }
 
-.disabled {
-    background-color: #888888;
-}
-
 #menu {
     padding: 20px;
 }
@@ -120,6 +134,15 @@ body {
     background-color: #cc0000;
 }
 
+#message_grid, #header {
+    text-align: center;
+}
+
+#stats {
+    padding: 10px 0px;
+}
+
+/* ---------- Cards and Grid ---------- */
 .Easy {
   width: 450px;
   height: 300px;
@@ -155,7 +178,6 @@ body {
   transform-style: preserve-3d;
 }
 
-
 img {
   width: 100%
 }
@@ -166,20 +188,10 @@ img {
   backface-visibility: hidden;
 }
 
-
 .flip {
   transform: rotateY(180deg);
 }
 
-
 .front_face {
   transform: rotateY(180deg);
-}
-
-#message_grid, #header {
-    text-align: center;
-}
-
-#stats {
-    padding: 10px 0px;
 }

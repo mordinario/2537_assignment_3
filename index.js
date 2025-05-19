@@ -29,6 +29,9 @@ const GameGrid = document.getElementById("game_grid");
 const MessageGrid = document.getElementById("message_grid");
 const resetButton = document.getElementById("reset");
 const startButton = document.getElementById("start");
+const PairsLeft = document.getElementById("pairs_left");
+const PairsMatched = document.getElementById("pairs_matched");
+const PairsTotal = document.getElementById("pairs_total");
 // Declare difficulties
 const Difficulties = {
     Easy: {
@@ -80,18 +83,20 @@ async function setup() {
     let secondCard = undefined
     // When clicked
     $(".card").on(("click"), function () {
+        // If game running, count click
+        if($(this).parent().hasClass("running"))
+        {
+            clickAmount++;
+            document.getElementById("clicks").innerText = `Clicks: ${clickAmount}`
+        }
         // If cards are currently being compared,
-        // OR if the game isn't currently running,
         // do nothing
-        if($(this).parent().hasClass("paused") ||
-           !$(this).parent().hasClass("running"))
+        if($(this).parent().hasClass("paused"))
         {
             return;
         }
         // Else, flip card
         $(this).toggleClass("flip");
-        clickAmount++;
-        document.getElementById("clicks").innerText = `Clicks: ${clickAmount}`
 
         // If first card is undefined,
         // set the first card to the clicked card
@@ -119,9 +124,11 @@ async function setup() {
             // Disable the cards' clicking
             console.log("match")
             pairsLeft--;
-            document.getElementById("pairs").innerText = `Pairs left: ${pairsLeft}`
+            refreshStats();
             $(`#${firstCard.parentNode.id}`).off("click")
             $(`#${secondCard.parentNode.id}`).off("click")
+            firstCard.parentNode.classList.add("solved")
+            secondCard.parentNode.classList.add("solved")
             // Reset selected cards
             firstCard = undefined
             secondCard = undefined
@@ -259,17 +266,18 @@ function startTimer()
             loseMessage.innerText = "You lose!";
             MessageGrid.appendChild(loseMessage);
             GameGrid.classList.add("paused");
-            GameGrid.classList.remove("running");
-            startButton.classList.remove("disabled")
         }
     }, secondDelay);
 }
 
+// Sets up stats
 function setupStats()
 {
     document.getElementById("difficulty").innerText = `Difficulty: ${difficulty}`
     document.getElementById("timer").innerText = `Time left: ${Difficulties[difficulty].timerSeconds}`
-    document.getElementById("pairs").innerText = `Pairs left: ${cardAmount / 2}`
+    PairsLeft.innerText = `Pairs left: ${cardAmount / 2}`
+    PairsMatched.innerText = `Pairs matched: 0`
+    PairsTotal.innerText = `Total pairs: ${cardAmount / 2}`
     document.getElementById("clicks").innerText = `Clicks: 0`
 }
 
@@ -321,12 +329,19 @@ function start()
     }
 }
 
+// Sets the theme of the page
 function setTheme(theme)
 {
     document.body.className = ''
     document.body.classList.add(theme)
 }
 
+// Refreshes the stats
+function refreshStats() {
+    PairsLeft.innerText = `Pairs left: ${pairsLeft}`
+    PairsMatched.innerText = `Pairs matched: ${cardAmount / 2 - pairsLeft}`
+    PairsTotal.innerText = `Total pairs: ${cardAmount / 2}`
+}
 $(document).ready(function() {
     console.log( "ready!" );
 });
