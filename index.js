@@ -26,19 +26,22 @@
 // Declare card template
 const Template = document.getElementById("card-template");
 const GameGrid = document.getElementById("game_grid");
+const MessageGrid = document.getElementById("message_grid");
+const resetButton = document.getElementById("reset");
+const startButton = document.getElementById("start");
 // Declare difficulties
 const Difficulties = {
     Easy: {
         cardAmount: 6,
-        timerSeconds: 15
+        timerSeconds: 20
     },
     Medium: {
         cardAmount: 12,
-        timerSeconds: 25
+        timerSeconds: 35
     },
     Hard: {
         cardAmount: 18,
-        timerSeconds: 40
+        timerSeconds: 45
     }
 }
 // Declare variables
@@ -223,7 +226,7 @@ function checkIfGameWon()
         let winMessage = document.createElement("p");
         winMessage.classList.add("message");
         winMessage.innerText = "You win!";
-        document.getElementById("message_grid").appendChild(winMessage);
+        MessageGrid.appendChild(winMessage);
         GameGrid.classList.add("won");
     }
 }
@@ -254,9 +257,10 @@ function startTimer()
             let loseMessage = document.createElement("p");
             loseMessage.classList.add("message");
             loseMessage.innerText = "You lose!";
-            document.getElementById("message_grid").appendChild(loseMessage);
+            MessageGrid.appendChild(loseMessage);
             GameGrid.classList.add("paused");
             GameGrid.classList.remove("running");
+            startButton.classList.remove("disabled")
         }
     }, secondDelay);
 }
@@ -297,7 +301,8 @@ function reset(difficulty)
     GameGrid.className = "";
     GameGrid.classList.add("paused");
     GameGrid.classList.remove("running");
-    document.getElementById("message_grid").innerHTML = '';
+    startButton.classList.remove("disabled")
+    MessageGrid.innerHTML = '';
     setupDifficulty(difficulty)
     setup()
 }
@@ -310,6 +315,7 @@ function start()
     {
         gameReset = false;
         GameGrid.classList.add("running")
+        startButton.classList.add("disabled")
         // Set up timer
         startTimer();
     }

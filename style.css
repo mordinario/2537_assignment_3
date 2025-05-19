@@ -8,15 +8,15 @@
 }
 
 .dark {
-    background-color: #222266;
-    color: #ffffff;
+    background-color: #100c1d;
+    color: #00ffff;
 
     & #game_grid {
-        border: 5px blueviolet solid;
+        border: 5px #ffffff solid;
     }
 
     & #menu {
-        background-color: #314159;
+        background-color: #1d2f62;
     }
 }
 
@@ -30,6 +30,36 @@
 
     & #menu {
         background-color: #c6c6c6;
+    }
+}
+
+.limbus {
+    background-color: #420a0a;
+    color: #ffdd0e;
+
+    & #game_grid {
+        border: 5px #f4c30e solid;
+    }
+
+    & #menu {
+        background-color: #6a0000;
+    }
+}
+
+.blue {
+    background-color: #2542c0;
+    color: #000000;
+
+    & #game_grid {
+        border: 5px #aaccff solid;
+    }
+
+    & #menu {
+        background-color: #95a7f9;
+    }
+
+    & #stats, #message_grid {
+        color: #ffffff;
     }
 }
 
@@ -62,12 +92,20 @@ body {
   flex-wrap: wrap;
 }
 
+.disabled {
+    background-color: #888888;
+}
+
 #menu {
     padding: 20px;
 }
 
 #difficulty {
     margin-right: 30px;
+}
+
+#theme {
+    margin-right: 40px;
 }
 
 #easy {
@@ -85,21 +123,32 @@ body {
 .Easy {
   width: 450px;
   height: 300px;
+
+  & .card {
+    width: 33%;
+  }
 }
 
 .Medium {
   width: 600px;
   height: 450px;
+
+  & .card {
+    width: 25%;
+  }
 }
 
 .Hard {
   width: 900px;
   height: 450px;
+
+  & .card {
+    width: 16.6%;
+  }
 }
 
 
 .card {
-  width: 150px;
   position: relative;
   transition: transform 1s;
   perspective: 1000px;
