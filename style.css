@@ -1,19 +1,105 @@
+@font-face {
+    font-family: 'DTM-Mono';
+    src: url("DTM-Mono.otf");
+}
+
+#themes {
+    padding-top: 5px
+}
+
+.dark {
+    background-color: #222266;
+    color: #ffffff;
+
+    & #game_grid {
+        border: 5px blueviolet solid;
+    }
+
+    & #menu {
+        background-color: #314159;
+    }
+}
+
+.light {
+    background-color: #ffffff;
+    color: #000000;
+
+    & #game_grid {
+        border: 5px tomato solid;
+    }
+
+    & #menu {
+        background-color: #c6c6c6;
+    }
+}
+
+p, span {
+    font-family: 'DTM-Mono';
+}
+
+button {
+  font-family: 'DTM-Mono';
+  border: none;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.diff_button {
+  color: white;
+}
+
 body {
   margin: 0px;
 }
 
 #game_grid {
   border: 5px tomato solid;
-  width: 600px;
-  height: 400px;
-  margin: auto;
+  margin: 10px auto;
   display: flex;
   flex-wrap: wrap;
 }
 
+#menu {
+    padding: 20px;
+}
+
+#difficulty {
+    margin-right: 30px;
+}
+
+#easy {
+    background-color: #00aa00;
+}
+
+#medium {
+    background-color: #cccc00;
+}
+
+#hard {
+    background-color: #cc0000;
+}
+
+.Easy {
+  width: 450px;
+  height: 300px;
+}
+
+.Medium {
+  width: 600px;
+  height: 450px;
+}
+
+.Hard {
+  width: 900px;
+  height: 450px;
+}
+
 
 .card {
-  width: 33.3%;
+  width: 150px;
   position: relative;
   transition: transform 1s;
   perspective: 1000px;
@@ -41,6 +127,10 @@ img {
   transform: rotateY(180deg);
 }
 
-#message_grid, #stats {
+#message_grid, #header {
     text-align: center;
+}
+
+#stats {
+    padding: 10px 0px;
 }

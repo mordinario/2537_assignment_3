@@ -28,25 +28,45 @@ const Template = document.getElementById("card-template");
 const GameGrid = document.getElementById("game_grid");
 // Declare difficulties
 const Difficulties = {
-    easy: {
+    Easy: {
         cardAmount: 6,
         timerSeconds: 15
     },
-    medium: {
+    Medium: {
         cardAmount: 12,
-        timerSeconds: 20
-    },
-    hard: {
-        cardAmount: 18,
         timerSeconds: 25
+    },
+    Hard: {
+        cardAmount: 18,
+        timerSeconds: 40
     }
 }
-// Declare difficulty (for this game)
-var difficulty = "easy";
-// Declare amount of cards
-const cardAmount = Difficulties[difficulty].cardAmount;
-var clickAmount = 0;
-var pairsLeft = cardAmount / 2;
+// Declare variables
+
+var difficulty = "Easy";
+var gameReset;
+var clickAmount;
+var cardAmount;
+var pairsLeft;
+
+// Initializes game to specified
+// difficulty (or current difficulty
+// if unspecified)
+function setupDifficulty(difficultyToBe)
+{
+    if(typeof difficultyToBe != 'undefined')
+    {
+        difficulty = difficultyToBe
+    }
+    GameGrid.classList.add(difficulty)
+    gameReset = true;
+    // Declare amount of cards
+    cardAmount = Difficulties[difficulty].cardAmount;
+    clickAmount = 0;
+    pairsLeft = cardAmount / 2;
+}
+
+setupDifficulty();
 
 async function setup() {
     // Set cards up
@@ -58,10 +78,10 @@ async function setup() {
     // When clicked
     $(".card").on(("click"), function () {
         // If cards are currently being compared,
-        // OR if the game has been lost,
+        // OR if the game isn't currently running,
         // do nothing
         if($(this).parent().hasClass("paused") ||
-           $(this).parent().hasClass("lost"))
+           !$(this).parent().hasClass("running"))
         {
             return;
         }
@@ -126,9 +146,6 @@ async function setup() {
             GameGrid.classList.remove("paused")
         }, 1000)
     });
-
-    // Set up timer
-    setupTimer();
     // Set up stats
     setupStats();
 }
@@ -142,17 +159,18 @@ async function setupCards()
     let allPkmn = pkmnsJson.results;
 
     // Set chosen pokemon indexes
-    const chosenIndexes = [];
-    for(let i = 1; i <= 3; i++)
+    let chosenIndexes = [];
+    for(let i = 0; i < pairsLeft; i++)
     {
-        let index = Math.floor(Math.random() * 1024);
-        chosenIndexes.push(index);
+        let randIndex = Math.floor(Math.random() * 1024);
+        chosenIndexes.push(randIndex);
     }
+    console.log(chosenIndexes)
 
     // Array of cards
     let cards = [];
     // For every card
-    for(let i = 1; i <= 6; i++)
+    for(let i = 1; i <= cardAmount; i++)
     {
         // Clone template node
         let card = Template.content.cloneNode(true);
@@ -211,17 +229,20 @@ function checkIfGameWon()
 }
 
 // Sets up timer
-function setupTimer()
+function startTimer()
 {
+    GameGrid.classList.remove("paused");
     // Set timer
     let timerSeconds = Difficulties[difficulty].timerSeconds;
     let secondsLeft = timerSeconds;
     let secondDelay = 1000;
     let timer = setInterval(() => {
         // If game was won, stop counting down
-        if(GameGrid.classList.contains("won"))
+        if(GameGrid.classList.contains("won") ||
+           gameReset == true)
         {
             timer = clearInterval(timer)
+            GameGrid.classList.remove("won")
             return
         }
         secondsLeft--;
@@ -234,7 +255,8 @@ function setupTimer()
             loseMessage.classList.add("message");
             loseMessage.innerText = "You lose!";
             document.getElementById("message_grid").appendChild(loseMessage);
-            GameGrid.classList.add("lost");
+            GameGrid.classList.add("paused");
+            GameGrid.classList.remove("running");
         }
     }, secondDelay);
 }
@@ -264,6 +286,39 @@ function shuffle(array) {
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex], array[currentIndex]];
   }
+}
+
+// Resets the game to a specific difficulty
+// (or current difficulty if unspecified)
+function reset(difficulty)
+{
+    gameReset = true;
+    GameGrid.innerHTML = '';
+    GameGrid.className = "";
+    GameGrid.classList.add("paused");
+    GameGrid.classList.remove("running");
+    document.getElementById("message_grid").innerHTML = '';
+    setupDifficulty(difficulty)
+    setup()
+}
+
+// Starts the game
+function start()
+{
+    // Start, ONLY if game isn't running
+    if(!GameGrid.classList.contains("running"))
+    {
+        gameReset = false;
+        GameGrid.classList.add("running")
+        // Set up timer
+        startTimer();
+    }
+}
+
+function setTheme(theme)
+{
+    document.body.className = ''
+    document.body.classList.add(theme)
 }
 
 $(document).ready(function() {

@@ -5,20 +5,40 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Assignment 3</title>
   <link rel="stylesheet" href="style.css">
   <!-- import jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
-<body>
-    <div id="stats">
-        <p id="difficulty"></p>
-        <p id="timer"></p>
-        <p id="pairs"></p>
-        <p id="clicks"></p>
+<body class="light">
+    <div id="header">
+        <div id="menu">
+            <div id="buttons">
+                <span id="difficulty"></span>
+                <button id="easy" class="diff_button" onclick="reset('Easy')">Easy</button>
+                <button id="medium" class="diff_button" onclick="reset('Medium')">Medium</button>
+                <button id="hard" class="diff_button" onclick="reset('Hard')">Hard</button>
+            </div>
+            <div id="themes">
+                <span>Set Theme</span>
+                <button id="dark" class="theme_button" onclick="setTheme('dark')">Dark</button>
+                <button id="light" class="theme_button" onclick="setTheme('light')">Light</button>
+            </div>
+        </div>
+        <div id="stats">
+            <span id="timer"></span>
+            <span> | </span>
+            <span id="pairs"></span>
+            <span> | </span>
+            <span id="clicks"></span>
+        </div>
+        <div id="resetStart">
+                <button id="reset" class="theme_button" onclick="reset()">Reset</button>
+                <button id="start" class="theme_button" onclick="start()">Start</button>
+        </div>
     </div>
-    <div id="game_grid"></div>
+    <div id="game_grid" class="paused"></div>
     <div id="message_grid"></div>
 
   <!-- Card Template -->
