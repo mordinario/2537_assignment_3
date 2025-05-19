@@ -402,7 +402,9 @@ function addTenSecs()
 function start()
 {
     // Start, ONLY if game isn't running
-    if(!GameGrid.classList.contains("running"))
+    // and if this button isn't disabled
+    if(!GameGrid.classList.contains("running") &&
+       !startButton.classList.contains("disabled"))
     {
         // Declare game as "running"
         GameGrid.classList.add("running")
