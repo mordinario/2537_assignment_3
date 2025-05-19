@@ -91,12 +91,15 @@ async function setup()
     secondCard = undefined
     // When clicked
     $(".card").on(("click"), function () {
-        // If game running, count click
-        if($(this).parent().hasClass("running"))
+        // If game isn't running,
+        // do nothing
+        if(!$(this).parent().hasClass("running"))
         {
-            clickAmount++;
-            document.getElementById("clicks").innerText = `Clicks: ${clickAmount}`
+            return;
         }
+        // Else, count click
+        clickAmount++;
+        document.getElementById("clicks").innerText = `Clicks: ${clickAmount}`
         // If cards are currently being compared,
         // do nothing
         if($(this).parent().hasClass("paused"))
