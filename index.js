@@ -23,7 +23,7 @@
    improve my chances of finding matching pairs.
 */
 
-// Declare card template
+// Declare constant objects
 const Template = document.getElementById("card-template");
 const GameGrid = document.getElementById("game_grid");
 const MessageGrid = document.getElementById("message_grid");
@@ -34,6 +34,7 @@ const PairsMatched = document.getElementById("pairs_matched");
 const PairsTotal = document.getElementById("pairs_total");
 const FlipButton = document.getElementById("flip_cards");
 const TimeButton = document.getElementById("add_time");
+
 // Declare difficulties
 const Difficulties = {
     Easy: {
@@ -49,10 +50,9 @@ const Difficulties = {
         timerSeconds: 75
     }
 }
-// Declare variables
 
+// Declare variables
 var difficulty = "Easy";
-var gameReset;
 var clickAmount;
 var cardAmount;
 var pairsLeft;
@@ -65,12 +65,13 @@ var secondCard = undefined;
 // if unspecified)
 function setupDifficulty(difficultyToBe)
 {
+    // If difficulty is specified,
+    // set current difficulty accordingly
     if(typeof difficultyToBe != 'undefined')
     {
         difficulty = difficultyToBe
     }
     GameGrid.classList.add(difficulty)
-    gameReset = true;
     // Declare amount of cards
     cardAmount = Difficulties[difficulty].cardAmount;
     clickAmount = 0;
@@ -79,7 +80,9 @@ function setupDifficulty(difficultyToBe)
 
 setupDifficulty();
 
-async function setup() {
+// Sets up the board
+async function setup()
+{
     // Set cards up
     await setupCards();
 
@@ -174,6 +177,8 @@ async function setupCards()
     let chosenIndexes = [];
     for(let i = 0; i < pairsLeft; i++)
     {
+        // Make sure any given index
+        // isn't already in the array
         do var randIndex = Math.floor(Math.random() * 1024)
         while (chosenIndexes.includes(randIndex));
         chosenIndexes.push(randIndex);
@@ -215,28 +220,34 @@ async function setupCards()
 // if the game has been won)
 function checkIfGameWon()
 {
-    // If any cards aren't flipped over,
-    // then the game is not done yet
+    // Set control flag
     let solved = true;
+    // For every card in the grid
     for(let i = 1; i <= cardAmount; i++)
     {
+        // Get unique card
         let newCard = GameGrid.querySelector(`#img${i}`)
+        // If this card isn't solved,
+        // then the game isn't done yet -
+        // set flag to false
         if(!newCard.classList.contains("solved"))
         {
             solved = false;
             break;
         }
     }
-    // If all cards are flipped over,
+    // If control flag is true,
     // then the game is won
     if(solved == true)
     {
-        GameGrid.classList.add("solved")
+        // Add and display win message
         let winMessage = document.createElement("p");
         winMessage.classList.add("message");
         winMessage.innerText = "You win!";
         MessageGrid.appendChild(winMessage);
+        // Tell timer to stop running
         GameGrid.classList.add("won");
+        // Declare game not running
         GameGrid.classList.remove("running")
     }
 }
@@ -249,13 +260,15 @@ function startTimer()
     let timerSeconds = Difficulties[difficulty].timerSeconds;
     document.getElementById("timer").innerText = "Time left: " + Difficulties[difficulty].timerSeconds
     secondsLeft = timerSeconds;
-    let secondDelay = 1000;
     let timer = setInterval(() => {
-        // If game was won, stop counting down
+        // If game was won, or isn't running,
+        // stop counting down
         if(GameGrid.classList.contains("won") ||
-           gameReset == true)
+           !GameGrid.classList.contains("running"))
         {
+            // Stop timer
             timer = clearInterval(timer)
+            // Remove "won" class
             GameGrid.classList.remove("won")
             return
         }
@@ -264,15 +277,17 @@ function startTimer()
         // If timer runs out
         if(secondsLeft == 0)
         {
+            // Stop timer
             timer = clearInterval(timer)
+            // Add and display lose message
             let loseMessage = document.createElement("p");
             loseMessage.classList.add("message");
             loseMessage.innerText = "You lose!";
             MessageGrid.appendChild(loseMessage);
-            GameGrid.classList.add("paused");
+            // Declare game not running
             GameGrid.classList.remove("running");
         }
-    }, secondDelay);
+    }, 1000);
 }
 
 // Sets up stats
@@ -309,7 +324,6 @@ function shuffle(array) {
 // (or current difficulty if unspecified)
 function reset(difficulty)
 {
-    gameReset = true;
     GameGrid.innerHTML = '';
     GameGrid.className = "";
     GameGrid.classList.add("paused");
@@ -324,18 +338,25 @@ function reset(difficulty)
 // Resets powerups
 function resetPowerups()
 {
+    // Remove "disabled" from button classes
     FlipButton.classList.remove("disabled")
     TimeButton.classList.remove("disabled")
 }
 
+// Flips all cards
 function flipAll()
 {
+    // If this button isn't disabled,
+    // and the game is running
     if(!FlipButton.classList.contains("disabled") &&
        GameGrid.classList.contains("running"))
     {
+        // Disable the button
         FlipButton.classList.add("disabled")
+        // For each card
         for(let i = 1; i <= cardAmount; i++)
         {
+            // Get card
             let newCard = GameGrid.querySelector(`#img${i}`)
             // If card isn't already face-up,
             // or selected, then flip
@@ -343,10 +364,17 @@ function flipAll()
                !(typeof firstCard != 'undefined' && firstCard.parentNode.id == newCard.id) &&
                !(typeof secondCard != 'undefined' && secondCard.parentNode.id == newCard.id))
             {
+                // Pause game
+                // (Yes, I realize every card adds this -
+                //  no, I don't think it matters)
                 GameGrid.classList.add("paused")
+                // Flip card
                 newCard.classList.add("flip");
+                // One second from now,
                 setTimeout(() => {
+                    // Flip card again
                     newCard.classList.remove("flip");
+                    // Unpause game
                     GameGrid.classList.remove("paused")
                 }, 1000);
             }
@@ -354,12 +382,17 @@ function flipAll()
     }
 }
 
+// Adds ten seconds to the timer
 function addTenSecs()
 {
+    // If this button isn't disabled,
+    // and the game is running
     if(!TimeButton.classList.contains("disabled") &&
        GameGrid.classList.contains("running"))
     {
+        // Disable this button
         TimeButton.classList.add("disabled")
+        // Add ten seconds and reset the timer
         secondsLeft += 10;
         document.getElementById("timer").innerText = "Time left: " + secondsLeft
     }
@@ -371,8 +404,9 @@ function start()
     // Start, ONLY if game isn't running
     if(!GameGrid.classList.contains("running"))
     {
-        gameReset = false;
+        // Declare game as "running"
         GameGrid.classList.add("running")
+        // Disable start button
         startButton.classList.add("disabled")
         // Set up timer
         startTimer();
@@ -382,7 +416,9 @@ function start()
 // Sets the theme of the page
 function setTheme(theme)
 {
+    // Reset theme
     document.body.className = ''
+    // Add theme
     document.body.classList.add(theme)
 }
 
@@ -393,6 +429,8 @@ function refreshStats() {
     PairsTotal.innerText = `Total pairs: ${cardAmount / 2}`
 }
 
+// Once document ready,
+// declare ready
 $(document).ready(function() {
     console.log("ready!");
 });
