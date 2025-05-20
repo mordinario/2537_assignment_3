@@ -125,6 +125,7 @@ async function setup()
         if(firstCard.parentNode.id == secondCard.parentNode.id)
         {
             firstCard = undefined
+            secondCard = undefined
             return;
         }
         // If the cards' images match
